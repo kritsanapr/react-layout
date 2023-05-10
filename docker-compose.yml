@@ -1,0 +1,56 @@
+version: '3.9'
+
+# Network
+networks:
+  web_network:
+    name: react_layout_network
+    driver: bridge
+
+# Services
+services:
+  # React App Development
+  reactapp_dev:
+    build: 
+      context: ./app
+      dockerfile: Dockerfile.dev
+    container_name: reactapp_dev
+    restart: always
+    volumes:
+      - ./app:/usr/app
+      - /usr/app/node_modules # Bookmarks volume
+    ports: 
+      - 5173:5173
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    networks:
+      - web_network
+
+  reactapp_prod:
+    build:
+      context: ./app
+      dockerfile: Dockerfile.prod
+    container_name: reactapp_prod
+    restart: always
+    volumes:
+      - ./app:/usr/app
+      - /usr/app/node_modules
+    ports:
+      - 4173:4173
+    networks:
+      - web_network
+    
+  # Nginx Web Server 
+  nginx:
+    image: nginx:latest
+    container_name: nginx_webserver_react
+    restart: always
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx:/etc/nginx/conf.d:ro
+    depends_on:
+      - reactapp_prod
+    networks:
+      - web_network
+
+
