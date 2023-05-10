@@ -25,15 +25,13 @@ services:
     networks:
       - web_network
 
+  # React App Production
   reactapp_prod:
-    build:
+    build: 
       context: ./app
       dockerfile: Dockerfile.prod
     container_name: reactapp_prod
     restart: always
-    volumes:
-      - ./app:/usr/app
-      - /usr/app/node_modules
     ports:
       - 4173:4173
     networks:
@@ -42,15 +40,14 @@ services:
   # Nginx Web Server 
   nginx:
     image: nginx:latest
-    container_name: nginx_webserver_react
+    container_name: nginx_reactapp
     restart: always
     ports:
-      - 80:80
+      - 8080:80
     volumes:
-      - ./nginx:/etc/nginx/conf.d:ro
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
       - reactapp_prod
     networks:
       - web_network
-
 

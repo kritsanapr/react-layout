@@ -1,23 +1,23 @@
 # Pull the base image
 FROM node:18.16.0-alpine
 
-# Set working directory
+# Set the working directory
 WORKDIR /usr/app
 
-# Copy package.json and package-lock.json
+# Copy app dependencies to container
 COPY ./package*.json ./
 
 # Install dependencies
-RUN npm Install
+RUN npm install
 
-# Copy all files
+# Copy code from host to container
 COPY . .
 
-# Expose port 4173 default for vite.jss
+# Expose Port
 EXPOSE 4173
 
-# Run npm run build for productions
+# Deploy app for production
 RUN npm run build
 
-# Run app with npm run preview
-CMD ["npm", "run", "preview"]
+# Run the app
+CMD ["npm","run","preview"]
